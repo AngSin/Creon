@@ -14,7 +14,6 @@ contract CreonPass is ERC721, Pausable, DefaultOperatorFilterer, Ownable {
     uint256 public usdPrice = 155 ether;
     uint256 public nativePrice = 0.5 ether;
     uint256 public cumulativePhaseLimit = 3333;
-    uint256 public constant MAX_PER_WALLET = 10;
     uint256 public totalSupply = 0;
     string public baseUri;
 
@@ -57,7 +56,6 @@ contract CreonPass is ERC721, Pausable, DefaultOperatorFilterer, Ownable {
         require(_usdContract == busdContract || _usdContract == usdtContract, "Unrecognized USD token contract!");
         require(_amount % usdPrice == 0, "Invalid USD amount!");
         uint256 mintAmount = _amount/usdPrice;
-        require(mintedCount[msg.sender] + mintAmount <= MAX_PER_WALLET, "Personal mint limit exceeded!");
         require(mintedCount[msg.sender] + mintAmount <= cumulativePhaseLimit, "Max Limit exceeded!");
         IERC20(_usdContract).transferFrom(msg.sender, address(this), _amount);
         mintedCount[msg.sender] += mintAmount;
@@ -71,7 +69,6 @@ contract CreonPass is ERC721, Pausable, DefaultOperatorFilterer, Ownable {
     function nativeMint(string calldata _referral) public payable {
         require(msg.value % nativePrice == 0, "Invalid Native Token amount!");
         uint256 mintAmount = msg.value/nativePrice;
-        require(mintedCount[msg.sender] + mintAmount <= MAX_PER_WALLET, "Personal mint limit exceeded!");
         require(mintedCount[msg.sender] + mintAmount <= cumulativePhaseLimit, "Max Limit exceeded!");
         mintedCount[msg.sender] += mintAmount;
         for (uint256 i = 0; i < mintAmount; i++) {
