@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "operator-filter-registry/src/DefaultOperatorFilterer.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract CreonPass is ERC721, Pausable, DefaultOperatorFilterer, Ownable {
     address public usdtContract;
@@ -15,14 +16,41 @@ contract CreonPass is ERC721, Pausable, DefaultOperatorFilterer, Ownable {
     uint256 public cumulativePhaseLimit = 3333;
     uint256 public constant MAX_PER_WALLET = 10;
     uint256 public totalSupply = 0;
+    string public baseUri;
 
     mapping(address => uint256) mintedCount;
+
+    using Strings for uint256;
 
     event ReferralMint(string , string token, uint256 totalPrice);
 
     constructor(address _usdtContract, address _busdContract) ERC721("CreonPass", "CPASS") {
         usdtContract = _usdtContract;
         busdContract = _busdContract;
+    }
+
+    function setBaseUri(string memory _baseUri) public onlyOwner {
+        baseUri = _baseUri;
+    }
+
+    function setUsdtContract(address _usdtContract) public onlyOwner {
+        usdtContract = _usdtContract;
+    }
+
+    function setBusdContract(address _busdContract) public onlyOwner {
+        busdContract = _busdContract;
+    }
+
+    function setUsdPrice(uint256 _usdPrice) public onlyOwner {
+        usdPrice = _usdPrice;
+    }
+
+    function setNativePrice(uint256 _nativePrice) public onlyOwner {
+        nativePrice = _nativePrice;
+    }
+
+    function setLimit(uint256 _limit) public onlyOwner {
+        cumulativePhaseLimit = _limit;
     }
 
     function usdMint(string calldata _referral, address _usdContract, uint _amount) public {
@@ -102,5 +130,9 @@ contract CreonPass is ERC721, Pausable, DefaultOperatorFilterer, Ownable {
         require(usdtSent, "Failed to send USDT!");
         (bool busdSent) = IERC20(busdContract).transferFrom(address(this), super.owner(), IERC20(busdContract).balanceOf(address(this)));
         require(busdSent, "Failed to send BUSD!");
+    }
+
+    function tokenURI(uint256 _tokenId) override public view returns (string memory) {
+        return string(abi.encodePacked(baseUri, _tokenId.toString()));
     }
 }
