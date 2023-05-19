@@ -37,6 +37,10 @@ describe("Minting", () => {
 		expect(eventArgs[0]).to.equal("CousinCrypto");
 		expect(eventArgs[1]).to.equal("USD");
 		expect(eventArgs[2]).to.equal(costForThreeMints);
+		const balanceAfterMints = ethers.utils.parseEther("535");
+		expect(await busdContract.balanceOf(owner.address)).to.equal(balanceAfterMints);
+		await creonPassContract.withdraw();
+		expect(await busdContract.balanceOf(owner.address)).to.equal(ethers.utils.parseEther("1000"));
 	});
 
 	it("should let users mint with native token (BNB)", async () => {

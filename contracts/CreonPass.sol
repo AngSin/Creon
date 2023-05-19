@@ -126,9 +126,9 @@ contract CreonPass is ERC721, Pausable, DefaultOperatorFilterer, Ownable {
     function withdraw() public onlyOwner {
         (bool sent,) = payable(super.owner()).call{value: address(this).balance}("");
         require(sent, "Failed to send Ether");
-        (bool usdtSent) = IERC20(usdtContract).transferFrom(address(this), super.owner(), IERC20(usdtContract).balanceOf(address(this)));
+        (bool usdtSent) = IERC20(usdtContract).transfer(super.owner(), IERC20(usdtContract).balanceOf(address(this)));
         require(usdtSent, "Failed to send USDT!");
-        (bool busdSent) = IERC20(busdContract).transferFrom(address(this), super.owner(), IERC20(busdContract).balanceOf(address(this)));
+        (bool busdSent) = IERC20(busdContract).transfer(super.owner(), IERC20(busdContract).balanceOf(address(this)));
         require(busdSent, "Failed to send BUSD!");
     }
 
