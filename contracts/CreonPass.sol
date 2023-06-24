@@ -15,7 +15,7 @@ contract CreonPass is ERC721, Pausable, DefaultOperatorFilterer, Ownable {
     uint256 public nativePrice = 0.5 ether;
     uint256 public cumulativePhaseLimit = 3333;
     uint256 public totalSupply = 0;
-    string public baseUri;
+    string public baseUri = "https://creon.herokuapp.com/";
 
     mapping(address => uint256) mintedCount;
 
