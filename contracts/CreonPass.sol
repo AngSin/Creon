@@ -21,7 +21,7 @@ contract CreonPass is ERC721, Pausable, DefaultOperatorFilterer, Ownable {
 
     using Strings for uint256;
 
-    event ReferralMint(string , string token, uint256 totalPrice);
+    event ReferralMint(string, string, uint256);
 
     constructor(address _usdtContract, address _busdContract) ERC721("CreonPass", "CPASS") {
         usdtContract = _usdtContract;
