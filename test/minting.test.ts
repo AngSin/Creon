@@ -22,6 +22,10 @@ describe("Minting", () => {
 			.to.be.revertedWith("ERC20: transfer amount exceeds balance");
 		expect(await busdContract.balanceOf(creonPassContract.address)).to.equal(0);
 		const costForThreeMints = ethers.utils.parseEther("465");
+		await creonPassContract.pause();
+		await expect(creonPassContract.usdMint("CousinCrypto", busdContract.address, costForThreeMints))
+			.to.be.revertedWith('Pausable: paused');
+		await creonPassContract.unpause();
 		const tx = await creonPassContract.usdMint("CousinCrypto", busdContract.address, costForThreeMints);
 		expect(await busdContract.balanceOf(creonPassContract.address)).to.equal(costForThreeMints);
 		expect(await creonPassContract.balanceOf(owner.address)).to.equal(3);
